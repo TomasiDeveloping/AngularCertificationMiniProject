@@ -1,0 +1,46 @@
+<div class="container">
+  <h1 class="text-center mt-3 mb-4">Patrick's {{title | uppercase}}</h1>
+  <form (ngSubmit)="onSubmit()" [formGroup]="quizCreateForm">
+    <div class="row">
+      <div class="col-5">
+        <select [ngClass]="{
+        'is-invalid': categoryControl?.invalid && (categoryControl?.dirty || categoryControl?.touched),
+        'is-valid': categoryControl?.valid
+        }" class="form-select" formControlName="category" id="categorySelect">
+          <option [selected]="true" [value]="''">Select a category</option>
+          <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+        </select>
+        <div *ngIf="categoryControl?.errors && (categoryControl?.dirty || categoryControl?.touched)"
+             class="invalid-feedback">
+          <p *ngIf="categoryControl?.hasError('required')">Category is required</p>
+        </div>
+      </div>
+      <div class="col-5">
+        <select [ngClass]="{
+        'is-invalid': difficultyControl?.invalid && (difficultyControl?.dirty || difficultyControl?.touched),
+        'is-valid': difficultyControl?.valid
+        }" class="form-select" formControlName="difficulty" id="difficultySelect">
+          <option [selected]="true" [value]="''">Select difficulty</option>
+          <option *ngFor="let difficulty of difficulties" [value]="difficulty | lowercase">{{difficulty}}</option>
+        </select>
+        <div *ngIf="difficultyControl?.errors && (difficultyControl?.dirty || difficultyControl?.touched)"
+             class="invalid-feedback">
+          <p *ngIf="difficultyControl?.hasError('required')">Difficulty is required</p>
+        </div>
+      </div>
+      <div class="col-2">
+        <button class="btn btn-primary" id="createBtn" type="submit">Create</button>
+      </div>
+    </div>
+  </form>
+  <ng-container>
+    <app-trivial-question (selectedAnswer)="onSelectAnswer($event)" *ngFor="let question of questions"
+                          [question]="question"></app-trivial-question>
+  </ng-container>
+  <ng-container *ngIf="userAnswers.length === 5">
+    <div class="custom-large-button-container">
+      <button (click)="onResult()" class="btn btn-secondary w-100">Submit</button>
+    </div>
+  </ng-container>
+</div>
+

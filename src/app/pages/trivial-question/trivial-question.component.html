@@ -1,0 +1,7 @@
+<div class="container">
+  <p [innerHTML]="question?.question"></p>
+  <div>
+    <button (click)="onClick(i, question!)" *ngFor="let answer of answers; let i=index" [innerHTML]="answer"
+            [ngClass]="i == clickedButton ? 'btn-success' : 'btn-outline-success'" class="btn me-3"></button>
+  </div>
+</div>
