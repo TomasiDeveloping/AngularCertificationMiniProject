@@ -18,15 +18,27 @@ export class TrivialQuestionComponent implements OnInit {
     this.answers.push(this.question?.correct_answer!);
     this.question?.incorrect_answers.forEach((question: string): void => {
       this.answers.push(question);
-    })
+    });
+    this.answers = this.shuffleArray(this.answers);
   }
 
-  onClick(index: number, selectedQuestion: TriviaQuestionModel): void {
+  public onClick(index: number, selectedQuestion: TriviaQuestionModel): void {
     this.clickedButton = index;
     const userAnswer: UserAnswerModel = {
       answer: this.answers[index],
       question: selectedQuestion.question!
     }
     this.selectedAnswer.emit(userAnswer);
+  }
+
+  private shuffleArray(array: string[]): string[] {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+    return array;
   }
 }

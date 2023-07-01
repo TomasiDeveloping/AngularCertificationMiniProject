@@ -1,9 +1,10 @@
 <div class="container">
-  <h3 class="text-center">{{'Results' | uppercase}}</h3>
+  <h3 class="text-center mt-4">{{'Results' | uppercase}}</h3>
   <div class="custom-large-button-container">
     <ng-container *ngFor="let question of currentQuestions">
-      <p [innerHTML]="question.question"></p>
-      <button *ngFor="let answer of question.incorrect_answers" [innerHTML]="answer" [ngClass]="GetColor(question, answer)"
+      <p [innerHTML]="question.question" class="mt-4"></p>
+      <button *ngFor="let answer of question.incorrect_answers" [innerHTML]="answer"
+              [ngClass]="getColor(question, answer)"
               class="btn me-3"></button>
       <button [innerHTML]="question.correct_answer" class="btn btn-success"></button>
     </ng-container>

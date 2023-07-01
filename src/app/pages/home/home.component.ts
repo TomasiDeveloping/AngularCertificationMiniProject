@@ -12,6 +12,8 @@ import {Router} from "@angular/router";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  public hasError: boolean = false;
+  public errorMessage: string = '';
   public title: string = 'Quiz Maker';
   public difficulties: string[] = ['Easy', 'Medium', 'Hard'];
   public categories: TriviaCategoryModel[] = [];
@@ -34,28 +36,41 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.hasError = false;
     this._triviaService.getCategories().subscribe({
       next: ((response: TriviaCategoryModel[]): void => {
         this.categories = response;
       }),
       error: error => {
         console.log(error);
+        this.hasError = true;
+        this.errorMessage = 'Could not load Categories';
       }
     });
   }
 
-  onSubmit(): void {
+  public onCreate(): void {
+    if (this.quizCreateForm.invalid) {
+      return;
+    }
+    this.userAnswers = [];
     const difficulty: string = this.difficultyControl?.value;
     const categoryId: number = this.categoryControl?.value;
+    this.hasError = false;
     this._triviaService.getQuestions(categoryId, difficulty).subscribe({
       next: ((response: TriviaQuestionModel[]): void => {
         this.questions = response;
         sessionStorage.setItem('quiz', JSON.stringify(this.questions));
-      })
+      }),
+      error: error => {
+        console.log(error);
+        this.hasError = true;
+        this.errorMessage = 'Could not load questions';
+      }
     });
   }
 
-  onSelectAnswer(userAnswer: UserAnswerModel): void {
+  public onSelectAnswer(userAnswer: UserAnswerModel): void {
     if (!this.userAnswers.some(userAnswerModel => userAnswerModel.question === userAnswer.question)) {
       this.userAnswers.push(userAnswer);
     } else {
@@ -64,7 +79,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  onResult(): void {
+  public onSubmit(): void {
     this._router.navigate(['/result'], {state: {data: this.userAnswers}}).then();
   }
 }

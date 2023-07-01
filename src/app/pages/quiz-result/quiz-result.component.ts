@@ -14,6 +14,7 @@ export class QuizResultComponent implements OnInit, OnDestroy {
   public currentUserAnswers: UserAnswerModel[] = [];
   public currentQuestions: TriviaQuestionModel[] = [];
   public scored: number = 0;
+
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
 
   ngOnInit(): void {
@@ -27,7 +28,7 @@ export class QuizResultComponent implements OnInit, OnDestroy {
     });
   }
 
-  GetColor(question: TriviaQuestionModel, currentAnswer: string): 'btn-danger' | 'btn-outline-success' {
+  public getColor(question: TriviaQuestionModel, currentAnswer: string): 'btn-danger' | 'btn-outline-success' {
     const userAnswer: UserAnswerModel = this.currentUserAnswers.find((userAnswerModel: UserAnswerModel): boolean => userAnswerModel.question === question.question)!;
     if (currentAnswer === userAnswer?.answer) {
       return 'btn-danger';
@@ -36,15 +37,16 @@ export class QuizResultComponent implements OnInit, OnDestroy {
     }
   }
 
-  calculateScore(userAnswers: UserAnswerModel[], questions: TriviaQuestionModel[]): void {
+  ngOnDestroy(): void {
+    sessionStorage.removeItem('quiz');
+  }
+
+  private calculateScore(userAnswers: UserAnswerModel[], questions: TriviaQuestionModel[]): void {
     questions.forEach((question: TriviaQuestionModel): void => {
       const userAnswer: UserAnswerModel = userAnswers.find((userAnswerModel: UserAnswerModel): boolean => userAnswerModel.question === question.question)!;
       if (userAnswer?.answer === question.correct_answer) {
         this.scored++
       }
     });
-  }
-  ngOnDestroy(): void {
-    sessionStorage.removeItem('quiz');
   }
 }

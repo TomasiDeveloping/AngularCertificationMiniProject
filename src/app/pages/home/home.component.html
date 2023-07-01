@@ -1,6 +1,6 @@
 <div class="container">
   <h1 class="text-center mt-3 mb-4">Patrick's {{title | uppercase}}</h1>
-  <form (ngSubmit)="onSubmit()" [formGroup]="quizCreateForm">
+  <form (ngSubmit)="onCreate()" [formGroup]="quizCreateForm">
     <div class="row">
       <div class="col-5">
         <select [ngClass]="{
@@ -29,17 +29,20 @@
         </div>
       </div>
       <div class="col-2">
-        <button class="btn btn-primary" id="createBtn" type="submit">Create</button>
+        <button [disabled]="quizCreateForm.invalid" class="btn btn-primary" id="createBtn" type="submit">Create</button>
       </div>
     </div>
   </form>
-  <ng-container>
+  <ng-container *ngIf="!hasError; else errorBox">
     <app-trivial-question (selectedAnswer)="onSelectAnswer($event)" *ngFor="let question of questions"
                           [question]="question"></app-trivial-question>
   </ng-container>
+  <ng-template #errorBox>
+    <app-error-box [errorMessage]="errorMessage"></app-error-box>
+  </ng-template>
   <ng-container *ngIf="userAnswers.length === 5">
     <div class="custom-large-button-container">
-      <button (click)="onResult()" class="btn btn-secondary w-100">Submit</button>
+      <button (click)="onSubmit()" class="btn btn-secondary w-100">Submit</button>
     </div>
   </ng-container>
 </div>
